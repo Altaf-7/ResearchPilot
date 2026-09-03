@@ -79,9 +79,9 @@ cp .env.example .env
 - [x] **V0:** Project Setup & Core Configuration
 - [x] **V1:** Document-based RAG pipeline (PDF, Markdown, TXT)
 - [x] **V2:** Web Search via LangChain Tools (DuckDuckGo integration)
-- [x] **V3:** Autonomous AI Agent orchestration (LangGraph)
+- [x] **V3:** Autonomous AI Agent (LangChain)
 - [x] **V4:** Advanced RAG techniques (Reranking, Query Expansion)
-- [ ] **V5:** Agentic Evaluation & Tracing
+- [x] **V5:** Agentic Evaluation & Tracing
 
 ---
 
@@ -169,6 +169,19 @@ LLM-generated citations can be highly unreliable and prone to hallucination (e.g
 3. Forcing the LLM (using LangChain's `.with_structured_output()`) to pick from our pre-validated `sources` array and cite them using `[id]` mapping.
 This physically prevents the LLM from hallucinating fake source links!
 
+## Evaluation Pipeline (V5)
+ResearchPilot includes a deterministic evaluation pipeline to measure retrieval and generation quality against a version-controlled dataset (`data/evaluation/dataset.json`).
+
+**Metrics Measured:**
+- **Retrieval:** Recall@K and Precision@K
+- **Generation:** Groundedness (Faithfulness) and Relevance (using an LLM-as-Judge approach)
+
+**How to Run Evaluation:**
+```bash
+python scripts/evaluate.py
+```
+*Note: Ensure your `.env` is configured with a valid API key, as the evaluation script uses the LLM to score the generation metrics.*
+
 ## How to Run Tests
 ```bash
 pytest
@@ -210,7 +223,8 @@ pytest
 - [x] Deduplicate gathered sources and prevent LLM URL hallucination
 - [x] Create POST `/api/v4/report` endpoint
 
-### V5: Advanced Agentic Routing (LangGraph)
-- [ ] Transition from standard Agent to stateful LangGraph
-- [ ] Implement explicit routing edges to handle tool failures (e.g. DDG blocking)
-- [ ] Support human-in-the-loop approvals for complex research
+### V5: Agentic Evaluation & Tracing
+- [x] Create deterministic evaluation dataset (`data/evaluation/dataset.json`)
+- [x] Develop metrics library (Recall@K, Precision@K, LLM-as-Judge Groundedness/Relevance)
+- [x] Write orchestrator script to run evaluation suite (`scripts/evaluate.py`)
+- [x] Implement deterministic tests for IR math logic (`tests/test_metrics.py`)

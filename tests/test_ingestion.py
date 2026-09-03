@@ -17,12 +17,13 @@ def test_load_documents(mock_isfile, mock_listdir, mock_text_loader, mock_pdf_lo
     mock_pdf_instance.load.return_value = [Document(page_content="pdf content", metadata={"source": "test.pdf", "page": 1})]
     mock_pdf_loader.return_value = mock_pdf_instance
     
-    def mock_load():
-        return [Document(page_content="text content", metadata={"source": "test.txt"})]
+    def mock_text_load_side_effect(filepath):
+        filename = filepath.split("/")[-1].split("\\")[-1]
+        mock_instance = MagicMock()
+        mock_instance.load.return_value = [Document(page_content="text content", metadata={"source": filename})]
+        return mock_instance
         
-    mock_text_instance = MagicMock()
-    mock_text_instance.load.side_effect = lambda: [Document(page_content="text content", metadata={"source": "test.txt"})]
-    mock_text_loader.return_value = mock_text_instance
+    mock_text_loader.side_effect = mock_text_load_side_effect
     
     ingestor = DocumentIngestor(docs_dir="/mock/dir", chroma_dir="/mock/chroma")
     

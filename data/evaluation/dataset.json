@@ -1,0 +1,142 @@
+[
+  {
+    "id": "q01",
+    "question": "What are the core components of the RAG system described in the uploaded documents?",
+    "category": "document_search",
+    "expected_sources": ["dummy.txt"],
+    "expected_answer_concepts": ["Retriever", "Embedding Model", "LLM"]
+  },
+  {
+    "id": "q02",
+    "question": "What is the primary function of the Retriever?",
+    "category": "document_search",
+    "expected_sources": ["dummy.txt"],
+    "expected_answer_concepts": ["fetches relevant documents", "based on the query"]
+  },
+  {
+    "id": "q03",
+    "question": "Which component is responsible for vector representations in the RAG system?",
+    "category": "document_search",
+    "expected_sources": ["dummy.txt"],
+    "expected_answer_concepts": ["Embedding Model"]
+  },
+  {
+    "id": "q04",
+    "question": "Does the uploaded dummy document mention anything about LangGraph?",
+    "category": "document_search",
+    "expected_sources": ["dummy.txt"],
+    "expected_answer_concepts": ["does not mention", "no evidence"]
+  },
+  {
+    "id": "q05",
+    "question": "According to the dummy document, what does the LLM do?",
+    "category": "document_search",
+    "expected_sources": ["dummy.txt"],
+    "expected_answer_concepts": ["components of the RAG system", "LLM"]
+  },
+  {
+    "id": "q06",
+    "question": "Who won the Nobel Prize in Physics in 2023?",
+    "category": "web_search",
+    "expected_sources": [],
+    "expected_answer_concepts": ["Pierre Agostini", "Ferenc Krausz", "Anne L'Huillier"]
+  },
+  {
+    "id": "q07",
+    "question": "What is the current population of Tokyo?",
+    "category": "web_search",
+    "expected_sources": [],
+    "expected_answer_concepts": ["million", "population"]
+  },
+  {
+    "id": "q08",
+    "question": "What is the capital of France?",
+    "category": "no_evidence",
+    "expected_sources": [],
+    "expected_answer_concepts": ["No evidence", "capital of France cannot be identified"]
+  },
+  {
+    "id": "q09",
+    "question": "What are the health benefits of eating uranium?",
+    "category": "no_evidence",
+    "expected_sources": [],
+    "expected_answer_concepts": ["No evidence", "uranium"]
+  },
+  {
+    "id": "q10",
+    "question": "Who is the secret ruler of Mars?",
+    "category": "no_evidence",
+    "expected_sources": [],
+    "expected_answer_concepts": ["No evidence", "cannot be answered", "Mars"]
+  },
+  {
+    "id": "q11",
+    "question": "How do you define Retrieval-Augmented Generation?",
+    "category": "document_search",
+    "expected_sources": ["dummy.txt"],
+    "expected_answer_concepts": ["Retriever", "LLM", "Embedding Model"]
+  },
+  {
+    "id": "q12",
+    "question": "What are the latest advancements in Quantum Computing as of 2024?",
+    "category": "web_search",
+    "expected_sources": [],
+    "expected_answer_concepts": ["qubits", "quantum", "IBM", "Google"]
+  },
+  {
+    "id": "q13",
+    "question": "Is the earth flat?",
+    "category": "no_evidence",
+    "expected_sources": [],
+    "expected_answer_concepts": ["No evidence", "cannot be answered"]
+  },
+  {
+    "id": "q14",
+    "question": "What is the tallest mountain on Earth?",
+    "category": "no_evidence",
+    "expected_sources": [],
+    "expected_answer_concepts": ["No evidence", "cannot be determined"]
+  },
+  {
+    "id": "q15",
+    "question": "Who wrote the play Hamlet?",
+    "category": "no_evidence",
+    "expected_sources": [],
+    "expected_answer_concepts": ["No evidence", "cannot identify"]
+  },
+  {
+    "id": "q16",
+    "question": "Can you summarize the dummy text provided in the system?",
+    "category": "document_search",
+    "expected_sources": ["dummy.txt"],
+    "expected_answer_concepts": ["Retriever", "LLM", "Embedding Model", "fetches relevant documents"]
+  },
+  {
+    "id": "q17",
+    "question": "What is the weather in New York today?",
+    "category": "web_search",
+    "expected_sources": [],
+    "expected_answer_concepts": ["weather", "New York"]
+  },
+  {
+    "id": "q18",
+    "question": "Who is the CEO of Apple?",
+    "category": "web_search",
+    "expected_sources": [],
+    "expected_answer_concepts": ["Tim Cook"]
+  },
+  {
+    "id": "q19",
+    "question": "What is the speed of light?",
+    "category": "no_evidence",
+    "expected_sources": [],
+    "expected_answer_concepts": ["No evidence", "speed of light"]
+  },
+  {
+    "id": "q20",
+    "question": "What is the deepest part of the ocean?",
+    "category": "no_evidence",
+    "expected_sources": [],
+    "expected_answer_concepts": ["No evidence"]
+  }
+]
