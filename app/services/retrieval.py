@@ -1,21 +1,15 @@
 from typing import List
-from langchain_chroma import Chroma
-from langchain_google_genai import GoogleGenerativeAIEmbeddings
+from langchain.schema import Document
+from chromadb.api.models.Collection import Collection
 from app.config import settings
+from app.core.embeddings import get_embeddings
+from langchain_chroma import Chroma
 
 class RetrieverService:
     def __init__(self, chroma_dir: str = "./data/chroma", k: int = 4):
         self.chroma_dir = chroma_dir
         self.k = k
-        
-        embedding_model = settings.embedding_model
-        if "text-embedding-3" in embedding_model or "embedding-001" in embedding_model:
-            embedding_model = "models/gemini-embedding-001"
-            
-        self.embeddings = GoogleGenerativeAIEmbeddings(
-            model=embedding_model,
-            google_api_key=settings.llm_api_key
-        )
+        self.embeddings = get_embeddings()
         
         self.vector_store = Chroma(
             persist_directory=self.chroma_dir,

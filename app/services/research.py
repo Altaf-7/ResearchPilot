@@ -3,23 +3,18 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.messages import HumanMessage, AIMessage, ToolMessage
 from app.config import settings
+from app.core.llm import get_llm
 from app.tools.web_search import web_search_tool
 
 class ResearchService:
     def __init__(self):
-        model_name = settings.model_name
-        if "gpt" in model_name:
-            model_name = "gemini-1.5-flash"
-            
-        self.llm = ChatGoogleGenerativeAI(
-            model=model_name,
-            google_api_key=settings.llm_api_key,
-            temperature=0.0
-        )
+        # 1. Initialize the base LLM via factory
+        # We need to extract the tool object
+        self.web_search_tool = web_search_tool
+        self.tools = [self.web_search_tool]
         
-        # Bind the web search tool to the LLM so it knows it can call it
-        self.tools = [web_search_tool]
-        self.llm_with_tools = self.llm.bind_tools(self.tools)
+        # We bind the tools to the LLM directly via factory
+        self.llm_with_tools = get_llm(tools=self.tools)
         
         self.prompt_template = ChatPromptTemplate.from_messages([
             ("system", """You are an intelligent research assistant. 

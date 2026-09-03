@@ -5,21 +5,14 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_chroma import Chroma
 from app.config import settings
+from app.core.embeddings import get_embeddings
 
 class DocumentIngestor:
     def __init__(self, docs_dir: str = "./data/documents", chroma_dir: str = "./data/chroma"):
         self.docs_dir = docs_dir
         self.chroma_dir = chroma_dir
-        
-        # Handle the default embedding model if it hasn't been updated for Google
-        embedding_model = settings.embedding_model
-        if "text-embedding-3" in embedding_model or "embedding-001" in embedding_model:
-            embedding_model = "models/gemini-embedding-001"
-            
-        self.embeddings = GoogleGenerativeAIEmbeddings(
-            model=embedding_model,
-            google_api_key=settings.llm_api_key
-        )
+        # Initialize Embeddings using our generic factory
+        self.embeddings = get_embeddings()
         self.text_splitter = RecursiveCharacterTextSplitter(
             chunk_size=1000,
             chunk_overlap=200

@@ -5,21 +5,14 @@ from langchain_core.documents import Document
 from app.services.retrieval import RetrieverService
 from app.api.models import SourceNode
 from app.config import settings
+from app.core.llm import get_llm
 
 class RAGService:
     def __init__(self, retriever_service: RetrieverService = None):
         self.retriever = retriever_service or RetrieverService()
         
-        model_name = settings.model_name
-        # Fallback in case user left the openai default in .env
-        if "gpt" in model_name:
-            model_name = "gemini-1.5-flash"
-            
-        self.llm = ChatGoogleGenerativeAI(
-            model=model_name,
-            google_api_key=settings.llm_api_key,
-            temperature=0.0
-        )
+        # 1. Initialize the LLM via factory
+        self.llm = get_llm()
         
         self.prompt_template = ChatPromptTemplate.from_messages([
             ("system", """You are an intelligent research assistant. 
