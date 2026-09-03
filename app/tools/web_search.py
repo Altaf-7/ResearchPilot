@@ -39,10 +39,14 @@ class WebSearchInput(BaseModel):
 _default_provider = DuckDuckGoProvider()
 
 @tool("web_search", args_schema=WebSearchInput)
-def web_search_tool(query: str) -> List[Dict[str, str]]:
+def web_search_tool(query: str) -> str:
     """
     Search the internet for current events, facts, or information not found in your training data or context.
     Use this tool when the user asks a question about the real world that requires up-to-date knowledge.
     Do NOT use this tool if the user is asking about a specific internal document or PDF, unless you need external context.
     """
-    return _default_provider.search(query)
+    import json
+    results = _default_provider.search(query)
+    if not results:
+        return "Search failed. No data available. Do not retry the search. Tell the user you don't have this information."
+    return json.dumps(results)

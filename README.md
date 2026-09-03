@@ -79,7 +79,7 @@ cp .env.example .env
 - [x] **V0:** Project Setup & Core Configuration
 - [x] **V1:** Document-based RAG pipeline (PDF, Markdown, TXT)
 - [x] **V2:** Web Search via LangChain Tools (DuckDuckGo integration)
-- [ ] **V3:** Autonomous AI Agent orchestration (LangGraph)
+- [x] **V3:** Autonomous AI Agent orchestration (LangGraph)
 - [ ] **V4:** Advanced RAG techniques (Reranking, Query Expansion)
 - [ ] **V5:** Agentic Evaluation & Tracing
 
@@ -104,16 +104,23 @@ uvicorn app.main:app --reload
 
 ### 3. Query the Endpoints
 
-**Ask a Document Question (RAG):**
+**Ask a Document Question (V1 RAG):**
 ```bash
 curl -X POST http://localhost:8000/api/v1/ask \
      -H "Content-Type: application/json" \
      -d '{"question": "What is ResearchPilot?"}'
 ```
 
-**Perform Web Research (Tool-Calling):**
+**Perform Web Research (V2 Tool-Calling):**
 ```bash
 curl -X POST http://localhost:8000/api/v2/research \
+     -H "Content-Type: application/json" \
+     -d '{"question": "What is the latest news regarding AI models today?"}'
+```
+
+**Run Autonomous Agent (V3 LangChain Agent):**
+```bash
+curl -X POST http://localhost:8000/api/v3/research \
      -H "Content-Type: application/json" \
      -d '{"question": "What is the latest news regarding AI models today?"}'
 ```
@@ -122,9 +129,13 @@ curl -X POST http://localhost:8000/api/v2/research \
 
 ## Available Tools
 
-**Web Search**
+**Web Search (`web_search_tool`)**
 - Provider: DuckDuckGo (`duckduckgo-search`)
-- Usage: Allows the system to query the live internet for recent facts, news, and external context that is not present in the internal document database. The LLM dynamically decides when to invoke this tool based on the user's question.
+- Usage: Allows the system to query the live internet for recent facts, news, and external context that is not present in the internal document database.
+
+**Document Search (`document_search_tool`)**
+- Provider: ChromaDB (Local)
+- Usage: Allows the agent to query uploaded proprietary documents. Exposed as a standard LangChain tool so the agent can autonomously decide when internal context is needed.
 
 ## How to Run Tests
 ```bash
@@ -149,3 +160,14 @@ pytest
 - [x] Implement DuckDuckGo Search Provider abstraction
 - [x] Develop LLM execution loop for conditional tool invocation
 - [x] Create POST `/api/v2/research` endpoint
+
+### V2.1: Provider Abstraction
+- [x] Integrate LangChain models for Groq, OpenAI, Anthropic, and HuggingFace
+- [x] Build multi-provider LLM factory (`app/core/llm.py`)
+- [x] Move to HuggingFace Inference API for Embeddings (`app/core/embeddings.py`)
+
+### V3: Autonomous AI Agent
+- [x] Convert Document RAG to a LangChain tool (`app/tools/rag_search.py`)
+- [x] Develop centralized System Prompt (`app/prompts.py`)
+- [x] Replace manual LLM loop with `create_agent` from LangChain
+- [x] Create POST `/api/v3/research` endpoint

@@ -19,4 +19,12 @@ class ResearchRequest(BaseModel):
 
 class ResearchResponse(BaseModel):
     answer: str
-    sources: List[Dict[str, Any]] = Field(default_factory=list)
+    sources: List[Dict[str, Any]] = []
+
+# V3 Models
+class AgentResearchRequest(BaseModel):
+    question: str
+
+class AgentResearchResponse(BaseModel):
+    answer: str
+    tools_used: List[Dict[str, Any]] = Field(default_factory=list)

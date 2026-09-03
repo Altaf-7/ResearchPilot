@@ -1,5 +1,5 @@
 from typing import List
-from langchain.schema import Document
+from langchain_core.documents import Document
 from chromadb.api.models.Collection import Collection
 from app.config import settings
 from app.core.embeddings import get_embeddings

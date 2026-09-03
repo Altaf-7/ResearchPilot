@@ -2,10 +2,12 @@ from fastapi import APIRouter, HTTPException
 from app.api.models import AskRequest, AskResponse, ResearchRequest, ResearchResponse
 from app.services.rag import RAGService
 from app.services.research import ResearchService
+from app.services.agent import AgentService
 
 router = APIRouter()
 rag_service = RAGService()
 research_service = ResearchService()
+agent_service = AgentService()
 
 @router.post("/ask", response_model=AskResponse)
 async def ask_question(request: AskRequest):
@@ -23,5 +25,15 @@ async def perform_research(request: ResearchRequest):
     try:
         answer, sources = research_service.research(request.question)
         return ResearchResponse(answer=answer, sources=sources)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+from app.api.models import AgentResearchRequest, AgentResearchResponse
+
+@router.post("/v3/research", response_model=AgentResearchResponse)
+async def perform_agent_research(request: AgentResearchRequest):
+    try:
+        answer, tools_used = agent_service.research(request.question)
+        return AgentResearchResponse(answer=answer, tools_used=tools_used)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
