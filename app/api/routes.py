@@ -1,51 +1,29 @@
+import logging
 from fastapi import APIRouter, HTTPException
-from app.api.models import AskRequest, AskResponse, ResearchRequest, ResearchResponse
-from app.services.rag import RAGService
-from app.services.research import ResearchService
-from app.services.agent import AgentService
-
-router = APIRouter()
-rag_service = RAGService()
-research_service = ResearchService()
-agent_service = AgentService()
-
-@router.post("/ask", response_model=AskResponse)
-async def ask_question(request: AskRequest):
-    try:
-        answer, sources = rag_service.ask(request.question)
-        return AskResponse(
-            answer=answer,
-            sources=sources
-        )
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-@router.post("/research", response_model=ResearchResponse)
-async def perform_research(request: ResearchRequest):
-    try:
-        answer, sources = research_service.research(request.question)
-        return ResearchResponse(answer=answer, sources=sources)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-from app.api.models import AgentResearchRequest, AgentResearchResponse
-
-@router.post("/v3/research", response_model=AgentResearchResponse)
-async def perform_agent_research(request: AgentResearchRequest):
-    try:
-        answer, tools_used, _ = agent_service.research(request.question)
-        return AgentResearchResponse(answer=answer, tools_used=tools_used)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-from app.api.models import ReportRequest, ResearchReport
+from app.api.models import ReportRequest, ResearchReport, HealthResponse
 from app.services.report import ReportService
+
+logger = logging.getLogger(__name__)
+router = APIRouter()
 report_service = ReportService()
 
-@router.post("/v4/report", response_model=ResearchReport)
+@router.get("/health", response_model=HealthResponse)
+async def health_check():
+    """
+    Health check endpoint to verify the API is running.
+    """
+    return HealthResponse(status="healthy", version="1.0.0")
+
+@router.post("/api/research", response_model=ResearchReport)
 async def generate_research_report(request: ReportRequest):
+    """
+    Generates a citation-backed research report using autonomous agents.
+    """
+    logger.info(f"Received research request: {request.question}")
     try:
         report = report_service.generate_report(request.question)
+        logger.info("Successfully generated research report.")
         return report
     except Exception as e:
+        logger.error(f"Error generating report: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))

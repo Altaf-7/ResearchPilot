@@ -7,6 +7,6 @@ def test_health_check():
     response = client.get("/health")
     assert response.status_code == 200
     assert response.json() == {
-        "status": "ok",
-        "service": "ResearchPilot"
+        "status": "healthy",
+        "version": "1.0.0"
     }
