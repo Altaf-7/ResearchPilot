@@ -34,6 +34,26 @@ researchpilot/
 └── run.py           # Entry point for running the application
 ```
 
+## V1 Capabilities (Document-based RAG)
+ResearchPilot currently implements a Document-based Retrieval-Augmented Generation (RAG) system:
+- **Ingestion**: Supports loading PDF, Markdown, and TXT files, chunking them, and generating embeddings.
+- **Vector Storage**: Uses ChromaDB for local, fast semantic search.
+- **Retrieval**: Retrieves the most relevant document chunks based on a user's query.
+- **Question Answering**: Uses Google Gemini to answer questions strictly based on the retrieved context, citing its sources.
+
+### Architecture
+```mermaid
+graph TD
+    A[Documents PDF/TXT/MD] --> B(Ingestion Script)
+    B --> C[Chunking & Embeddings]
+    C --> D[(Chroma Vector DB)]
+    E[User Question] --> F(API /ask Endpoint)
+    F --> G[Semantic Retrieval]
+    G <--> D
+    G --> H[LLM Generation]
+    H --> I[Answer + Citations]
+```
+
 ## Installation Instructions
 
 1. Clone the repository.
@@ -54,18 +74,57 @@ Copy `.env.example` to `.env` and fill in your values.
 ```bash
 cp .env.example .env
 ```
-Key variables:
-* `LLM_API_KEY`: Your LLM provider API key
-* `MODEL_NAME`: The model to use (e.g., gpt-4o)
+## Roadmap
 
-## How to Run
+- [x] **V0:** Project Setup & Core Configuration
+- [x] **V1:** Document-based RAG pipeline (PDF, Markdown, TXT)
+- [x] **V2:** Web Search via LangChain Tools (DuckDuckGo integration)
+- [ ] **V3:** Autonomous AI Agent orchestration (LangGraph)
+- [ ] **V4:** Advanced RAG techniques (Reranking, Query Expansion)
+- [ ] **V5:** Agentic Evaluation & Tracing
+
+---
+
+## Usage
+
+### 1. Ingest Documents (V1)
+Place any `.txt`, `.md`, or `.pdf` files into the `data/documents/` folder.
+Run the ingestion script to chunk and vectorize them into ChromaDB:
+
 ```bash
-python run.py
+python scripts/ingest.py
 ```
-Or via uvicorn directly:
+
+### 2. Run the API Server
+Start the FastAPI application:
+
 ```bash
 uvicorn app.main:app --reload
 ```
+
+### 3. Query the Endpoints
+
+**Ask a Document Question (RAG):**
+```bash
+curl -X POST http://localhost:8000/api/v1/ask \
+     -H "Content-Type: application/json" \
+     -d '{"question": "What is ResearchPilot?"}'
+```
+
+**Perform Web Research (Tool-Calling):**
+```bash
+curl -X POST http://localhost:8000/api/v2/research \
+     -H "Content-Type: application/json" \
+     -d '{"question": "What is the latest news regarding AI models today?"}'
+```
+
+---
+
+## Available Tools
+
+**Web Search**
+- Provider: DuckDuckGo (`duckduckgo-search`)
+- Usage: Allows the system to query the live internet for recent facts, news, and external context that is not present in the internal document database. The LLM dynamically decides when to invoke this tool based on the user's question.
 
 ## How to Run Tests
 ```bash
@@ -73,8 +132,20 @@ pytest
 ```
 
 ## Development Roadmap
-- [x] Initial project setup (V0)
-- [ ] Implement document ingestion and vectorization (V1)
-- [ ] Build basic RAG pipeline and query endpoint (V1)
-- [ ] Add agentic workflows with tool calling (V2)
-- [ ] Build simple frontend UI (V2)
+
+### V0: Initial Setup
+- [x] Project scaffolding and virtual environment setup
+- [x] Core configuration via Pydantic Settings
+- [x] FastAPI skeleton and API router setup
+
+### V1: Document-based RAG
+- [x] Implement document ingestion and text chunking
+- [x] Integrate ChromaDB vector storage and Google Gemini embeddings
+- [x] Build retrieval and augmented generation service
+- [x] Create POST `/api/v1/ask` endpoint
+
+### V2: Tool-Calling Architecture
+- [x] Integrate LangChain Tool schema
+- [x] Implement DuckDuckGo Search Provider abstraction
+- [x] Develop LLM execution loop for conditional tool invocation
+- [x] Create POST `/api/v2/research` endpoint
