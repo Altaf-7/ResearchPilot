@@ -21,7 +21,8 @@ def get_llm(tools=None):
         llm = ChatGroq(
             model=settings.model_name,
             api_key=settings.llm_api_key,
-            temperature=0
+            temperature=0,
+            max_tokens=3000
         )
     elif provider == "openai":
         from langchain_openai import ChatOpenAI
