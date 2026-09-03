@@ -33,7 +33,19 @@ from app.api.models import AgentResearchRequest, AgentResearchResponse
 @router.post("/v3/research", response_model=AgentResearchResponse)
 async def perform_agent_research(request: AgentResearchRequest):
     try:
-        answer, tools_used = agent_service.research(request.question)
+        answer, tools_used, _ = agent_service.research(request.question)
         return AgentResearchResponse(answer=answer, tools_used=tools_used)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+from app.api.models import ReportRequest, ResearchReport
+from app.services.report import ReportService
+report_service = ReportService()
+
+@router.post("/v4/report", response_model=ResearchReport)
+async def generate_research_report(request: ReportRequest):
+    try:
+        report = report_service.generate_report(request.question)
+        return report
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

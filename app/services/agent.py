@@ -21,7 +21,7 @@ class AgentService:
             system_prompt=AGENT_SYSTEM_PROMPT
         )
 
-    def research(self, question: str) -> Tuple[str, List[Dict[str, Any]]]:
+    def research(self, question: str) -> Tuple[str, List[Dict[str, Any]], List[Any]]:
         logger.info(f"Agent received question: {question}")
         
         try:
@@ -40,7 +40,7 @@ class AgentService:
                     })
                     logger.info(f"Agent used tool '{msg.name}'")
                     
-            return answer, tools_used
+            return answer, tools_used, messages
             
         except Exception as e:
             logger.error(f"Agent execution failed: {str(e)}")

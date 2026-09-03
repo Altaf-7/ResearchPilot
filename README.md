@@ -80,7 +80,7 @@ cp .env.example .env
 - [x] **V1:** Document-based RAG pipeline (PDF, Markdown, TXT)
 - [x] **V2:** Web Search via LangChain Tools (DuckDuckGo integration)
 - [x] **V3:** Autonomous AI Agent orchestration (LangGraph)
-- [ ] **V4:** Advanced RAG techniques (Reranking, Query Expansion)
+- [x] **V4:** Advanced RAG techniques (Reranking, Query Expansion)
 - [ ] **V5:** Agentic Evaluation & Tracing
 
 ---
@@ -125,6 +125,31 @@ curl -X POST http://localhost:8000/api/v3/research \
      -d '{"question": "What is the latest news regarding AI models today?"}'
 ```
 
+**Generate Citation-Backed Research Report (V4):**
+```bash
+curl -X POST http://localhost:8000/api/v4/report \
+     -H "Content-Type: application/json" \
+     -d '{"question": "What are the core components of the RAG system described in the uploaded documents?"}'
+```
+**V4 Expected Output Schema:**
+```json
+{
+  "question": "What are the core components of the RAG system...",
+  "executive_summary": "The RAG system comprises...",
+  "key_findings": ["...", "..."],
+  "detailed_analysis": "The RAG system is built around... [1]",
+  "sources": [
+    {
+      "title": "dummy.txt",
+      "url_or_id": "dummy.txt",
+      "source_type": "document",
+      "metadata": {"snippet": "..."}
+    }
+  ],
+  "limitations": "The evidence does not provide details about..."
+}
+```
+
 ---
 
 ## Available Tools
@@ -136,6 +161,13 @@ curl -X POST http://localhost:8000/api/v3/research \
 **Document Search (`document_search_tool`)**
 - Provider: ChromaDB (Local)
 - Usage: Allows the agent to query uploaded proprietary documents. Exposed as a standard LangChain tool so the agent can autonomously decide when internal context is needed.
+
+## Citation Design (V4)
+LLM-generated citations can be highly unreliable and prone to hallucination (e.g. inventing URLs). ResearchPilot solves this by:
+1. Intercepting the raw evidence from the Agent Tools *before* the final report generation.
+2. Normalizing and deduplicating the actual URLs/filenames into a verified list of `ReportSource`s.
+3. Forcing the LLM (using LangChain's `.with_structured_output()`) to pick from our pre-validated `sources` array and cite them using `[id]` mapping.
+This physically prevents the LLM from hallucinating fake source links!
 
 ## How to Run Tests
 ```bash
@@ -171,3 +203,14 @@ pytest
 - [x] Develop centralized System Prompt (`app/prompts.py`)
 - [x] Replace manual LLM loop with `create_agent` from LangChain
 - [x] Create POST `/api/v3/research` endpoint
+
+### V4: Citation-Backed Research Reports
+- [x] Integrate LangChain `.with_structured_output()` for Pydantic schema generation
+- [x] Build `ReportService` to intercept and normalize raw tool outputs (evidence)
+- [x] Deduplicate gathered sources and prevent LLM URL hallucination
+- [x] Create POST `/api/v4/report` endpoint
+
+### V5: Advanced Agentic Routing (LangGraph)
+- [ ] Transition from standard Agent to stateful LangGraph
+- [ ] Implement explicit routing edges to handle tool failures (e.g. DDG blocking)
+- [ ] Support human-in-the-loop approvals for complex research

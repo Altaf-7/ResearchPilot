@@ -1,1 +1,1 @@
-The core components of the RAG system are the Retriever, the embedding model, and the LLM.
+The core components of the RAG system are the Retriever, the embedding model, and the LLM. The retriever fetches relevant documents based on the query.
