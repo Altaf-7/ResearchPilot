@@ -22,9 +22,15 @@ class DocumentIngestor:
         os.makedirs(self.docs_dir, exist_ok=True)
         os.makedirs(self.chroma_dir, exist_ok=True)
 
-    def load_documents(self) -> List:
+    def load_documents(self, specific_filename: str = None) -> List:
         docs = []
-        for filename in os.listdir(self.docs_dir):
+        
+        if specific_filename:
+            files_to_process = [specific_filename]
+        else:
+            files_to_process = os.listdir(self.docs_dir)
+            
+        for filename in files_to_process:
             file_path = os.path.join(self.docs_dir, filename)
             if not os.path.isfile(file_path):
                 continue
@@ -54,9 +60,9 @@ class DocumentIngestor:
         
         return docs
 
-    def process_and_store(self):
+    def process_and_store(self, specific_filename: str = None):
         print(f"Loading documents from {self.docs_dir}...")
-        documents = self.load_documents()
+        documents = self.load_documents(specific_filename)
         
         if not documents:
             print("No documents found. Skipping ingestion.")

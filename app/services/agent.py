@@ -43,5 +43,12 @@ class AgentService:
             return answer, tools_used, messages
             
         except Exception as e:
-            logger.error(f"Agent execution failed: {str(e)}")
-            raise RuntimeError(f"Agent error: {str(e)}")
+            error_msg = str(e)
+            logger.error(f"Agent execution failed: {error_msg}")
+            
+            # Gracefully handle LangGraph infinite tool loops
+            if "recursion limit" in error_msg.lower() or "recursion_limit" in error_msg.lower():
+                logger.warning("Agent hit recursion limit. Returning fallback answer.")
+                return "I searched the documents and the web, but I could not find a definitive answer to your question. Please provide more context.", [], []
+                
+            raise RuntimeError(f"Agent error: {error_msg}")

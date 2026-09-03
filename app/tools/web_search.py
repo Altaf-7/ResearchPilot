@@ -28,7 +28,10 @@ class DuckDuckGoProvider(WebSearchProvider):
                 })
             return normalized
         except Exception as e:
-            raise RuntimeError(f"Web search failed: {str(e)}")
+            # We must not raise an exception, otherwise the agent enters an infinite retry loop.
+            # Instead, we return an empty list or print the error.
+            print(f"Web search exception: {e}")
+            return []
 
 # 3. Tool Schema
 class WebSearchInput(BaseModel):

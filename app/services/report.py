@@ -78,7 +78,7 @@ Generate the structured report now.""")
                                         title=source_id.split("/")[-1], # Rough title estimation
                                         url_or_id=source_id,
                                         source_type="document",
-                                        metadata={"snippet": content_part[:200]} # Just save a short snippet
+                                        metadata={"snippet": content_part} # Pass the full retrieved chunk to the final LLM
                                     ))
                             except ValueError:
                                 continue

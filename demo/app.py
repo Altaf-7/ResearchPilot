@@ -1,9 +1,46 @@
 import streamlit as st
 import requests
+import os
 
-API_URL = "http://localhost:8000/api/research"
+API_URL = os.getenv("API_URL", "http://localhost:8000/api/research")
 
 st.set_page_config(page_title="ResearchPilot", layout="wide")
+
+with st.sidebar:
+    st.header("📄 Upload Documents")
+    st.write("Upload proprietary documents to be searched during research.")
+    uploaded_file = st.file_uploader("Upload PDF, TXT, or Markdown", type=["pdf", "txt", "md"], accept_multiple_files=False)
+    
+    if uploaded_file is not None:
+        if st.button("Ingest Document"):
+            with st.spinner("Uploading and embedding into ChromaDB..."):
+                try:
+                    # Determine correct base URL for upload endpoint
+                    upload_url = API_URL.replace("/api/research", "/api/upload")
+                    
+                    files = {"file": (uploaded_file.name, uploaded_file.getvalue(), uploaded_file.type)}
+                    res = requests.post(upload_url, files=files, timeout=60)
+                    
+                    if res.status_code == 200:
+                        st.success(f"Successfully ingested {uploaded_file.name}!")
+                    else:
+                        st.error(f"Error: {res.text}")
+                except Exception as e:
+                    st.error(f"Failed to connect to the backend: {e}")
+                    
+    st.divider()
+    st.header("🗑️ Data Management")
+    if st.button("Clear All Data"):
+        with st.spinner("Wiping documents and vector DB..."):
+            try:
+                clear_url = API_URL.replace("/api/research", "/api/clear")
+                res = requests.delete(clear_url, timeout=30)
+                if res.status_code == 200:
+                    st.success("All proprietary data has been cleared!")
+                else:
+                    st.error(f"Failed to clear data: {res.text}")
+            except Exception as e:
+                st.error(f"Error connecting to backend: {e}")
 
 st.title("ResearchPilot 🚀")
 st.subheader("Autonomous AI Research Agent")

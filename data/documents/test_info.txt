@@ -1,1 +1,0 @@
-ResearchPilot is an amazing AI agentic application designed by a very smart developer. It is designed to work with Google Gemini.
